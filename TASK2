@@ -1,0 +1,72 @@
+#1Load the JSON File
+
+
+import pandas as pd
+
+file_path = "/content/data/2026-04-12 14:48:13.json"
+
+df = pd.read_json(file_path)
+
+print(f"Loaded {len(df)}stories from {file_path}")
+
+
+
+#2 Clean the Data
+df = pd.read_json(file_path)
+
+df.duplicated().sum()
+
+df = df.drop_duplicates(subset='post_id')
+
+print(f"After removing duplicates: {len(df)}")
+
+
+
+df.isna().sum()
+
+df = df.dropna(subset=['post_id', 'title', 'score', 'url'])
+
+print(f"After removing nulls: {len(df)}")
+
+df.shape
+
+
+
+df["score"] = df["score"].astype(int)
+
+df["num_comments"] = df["num_comments"].astype(int)
+
+
+
+df = df[df['score']>=5]
+
+print(f"After Rempving Low Scores: {len(df)}")
+
+
+
+df['title'] = df['title'].str.strip
+
+df['title']
+
+print(f"The number of rows after cleaning:{df.shape[0]}")
+
+
+
+# 3 Save as CSV
+output_path = "data/trends_clean.csv"
+
+
+
+df.to_csv(output_path, index=False)
+
+
+
+print(f"\nSaved {len(df)} rows to {output_path}")
+
+
+
+category_count = df["category"].value_counts()
+
+category_count
+
+print(f"\n no.of stories in each {category_count}")
